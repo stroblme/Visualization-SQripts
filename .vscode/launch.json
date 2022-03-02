@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Create Bloch Spheres",
+            "type": "python",
+            "request": "launch",
+            "program": "blochSphere.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Create Circuits",
+            "type": "python",
+            "request": "launch",
+            "program": "circuit.py",
+            "console": "integratedTerminal"
+        },
+    ]
+}
