@@ -90,7 +90,7 @@ class blochSphere(Bloch):
 
 
     def saveDefault(self, name, savePath=''):
-        if savePath='':
+        if savePath=='':
             savePath = self.savePath
         self.save(f"{self.savePath}{name}.pdf", format="pdf")
 
