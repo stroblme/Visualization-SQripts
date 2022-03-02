@@ -1,0 +1,12 @@
+matplotlib==3.4.3
+fonttools
+kiwisolver
+packaging
+Pillow
+pyparsing
+python-dateutil
+cycler
+six
+numpy
+qutip
+scipy
