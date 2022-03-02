@@ -89,7 +89,9 @@ class blochSphere(Bloch):
         self.spheres=list() # attention, this mechanism requires the parent class to contain a customPlot(self) function
 
 
-    def saveDefault(self, name):
+    def saveDefault(self, name, savePath=''):
+        if savePath='':
+            savePath = self.savePath
         self.save(f"{self.savePath}{name}.pdf", format="pdf")
 
     def addVect(self, vec, label=None, drawAngles=False, angleArcPos=0.5, angleArcRadius=0.5, norm=True):

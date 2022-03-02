@@ -8,8 +8,8 @@ class circuitBase(QuantumCircuit):
     # def __init__(self, **kwargs):
         # super(QuantumCircuit, self).__init__(kwargs)
 
-    def save(self, name):
-        self.draw(output='mpl', filename=f'../Thesis/figures/{name}.pdf', style={'displaycolor': {  'cx': (MAIN, WHITE),
+    def save(self, name, savePath='./out/'):
+        self.draw(output='mpl', filename=f'{savePath}{name}.pdf', style={'displaycolor': {  'cx': (MAIN, WHITE),
                                                                                                                     'x': (MAIN, WHITE),
                                                                                                                     'measure': (MAIN, WHITE),
                                                                                                                     'swap': (MAIN, WHITE),
