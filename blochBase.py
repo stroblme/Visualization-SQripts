@@ -5,12 +5,52 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Arc
 from matplotlib.lines import Line2D
 from colors import LIGHTGRAY, GRAY, WHITE, HIGHLIGHT, MAIN, DARKGRAY
+from packaging.version import parse as parse_version
+
+try:
+    import matplotlib
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+    from matplotlib.patches import FancyArrowPatch
+    from mpl_toolkits.mplot3d import proj3d
+
+    # Define a custom _axes3D function based on the matplotlib version.
+    # The auto_add_to_figure keyword is new for matplotlib>=3.4.
+    if parse_version(matplotlib.__version__) >= parse_version('3.4'):
+        def _axes3D(fig, *args, **kwargs):
+            ax = Axes3D(fig, *args, auto_add_to_figure=False, **kwargs)
+            return fig.add_axes(ax)
+    else:
+        def _axes3D(*args, **kwargs):
+            return Axes3D(*args, **kwargs)
+
+    class Arrow3D(FancyArrowPatch):
+        def __init__(self, xs, ys, zs, *args, **kwargs):
+            FancyArrowPatch.__init__(self, (0, 0), (0, 0), *args, **kwargs)
+
+            self._verts3d = xs, ys, zs
+
+        def draw(self, renderer):
+            xs3d, ys3d, zs3d = self._verts3d
+            xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
+
+            self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+            FancyArrowPatch.draw(self, renderer)
+except:
+    print("MPL import error")
+    pass
+
+try:
+    from IPython.display import display
+except:
+    pass
 
 class blochSphere(Bloch):
     LABEL_VECT_DISTANCER=1.1
     NUM_OF_ARC_POINTS=100
+    _rendered=False
 
-    def __init__(self, plotBack=False, labelAxis=False, savePath="./out"):
+    def __init__(self, plotBack=False, labelAxis=False, savePath="./out/"):
         fig = plt.figure(figsize=[5.1,5])
 
         super(blochSphere, self).__init__(fig=fig)
@@ -50,8 +90,7 @@ class blochSphere(Bloch):
 
 
     def saveDefault(self, name):
-
-        self.save(f"{self.savePath}/{name}.pdf", format="pdf")
+        self.save(f"{self.savePath}{name}.pdf", format="pdf")
 
     def addVect(self, vec, label=None, drawAngles=False, angleArcPos=0.5, angleArcRadius=0.5, norm=True):
         if norm:
@@ -159,7 +198,7 @@ class blochSphere(Bloch):
         for sphere in self.spheres:
             self.__plot_back(*sphere)
             self.__plot_front(*sphere)
-
+        print("test")
         self.plot_arcs()
 
         markerstyle= "o"
@@ -171,6 +210,50 @@ class blochSphere(Bloch):
 
     def addSquishedSphere(self, x, y, z):
         self.spheres.append([x,y,z])
+
+
+    def render(self, fig=None, axes=None):
+        """
+        Render the Bloch sphere and its data sets in on given figure and axes.
+        """
+        if self._rendered:
+            self.axes.clear()
+
+        self._rendered = True
+
+        # Figure instance for Bloch sphere plot
+        if not fig:
+            self.fig = plt.figure(figsize=self.figsize)
+
+        if not axes:
+            self.axes = _axes3D(self.fig, azim=self.view[0],
+                                elev=self.view[1])
+
+        if self.background:
+            self.axes.clear()
+            self.axes.set_xlim3d(-1.3, 1.3)
+            self.axes.set_ylim3d(-1.3, 1.3)
+            self.axes.set_zlim3d(-1.3, 1.3)
+        else:
+            self.plot_axes()
+            self.axes.set_axis_off()
+            self.axes.set_xlim3d(-0.7, 0.7)
+            self.axes.set_ylim3d(-0.7, 0.7)
+            self.axes.set_zlim3d(-0.7, 0.7)
+        # Manually set aspect ratio to fit a square bounding box.
+        # Matplotlib did this stretching for < 3.3.0, but not above.
+        if parse_version(matplotlib.__version__) >= parse_version('3.3'):
+            self.axes.set_box_aspect((1, 1, 1))
+
+        self.axes.grid(False)
+        self.plot_back()
+        self.plot_points()
+        self.plot_vectors()
+        self.plot_front()
+        self.plot_axes_labels()
+        self.plot_annotations()
+        self.customPlot()
+
 
     def __plot_back(self, x_c, y_c, z_c):
         # back half of sphere
