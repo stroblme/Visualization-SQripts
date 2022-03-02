@@ -10,10 +10,11 @@ class blochSphere(Bloch):
     LABEL_VECT_DISTANCER=1.1
     NUM_OF_ARC_POINTS=100
 
-    def __init__(self, plotBack=False, labelAxis=False):
+    def __init__(self, plotBack=False, labelAxis=False, savePath="./out"):
         fig = plt.figure(figsize=[5.1,5])
 
         super(blochSphere, self).__init__(fig=fig)
+        self.savePath=savePath
         self.spheres=list()
         self.arcs=list()
         self.make_sphere()
@@ -50,7 +51,7 @@ class blochSphere(Bloch):
 
     def saveDefault(self, name):
 
-        self.save(f"../Thesis/figures/{name}.pdf", format="pdf")
+        self.save(f"{self.savePath}/{name}.pdf", format="pdf")
 
     def addVect(self, vec, label=None, drawAngles=False, angleArcPos=0.5, angleArcRadius=0.5, norm=True):
         if norm:
