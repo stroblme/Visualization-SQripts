@@ -48,7 +48,7 @@ ax.set_yticklabels(["$\\vert 0\\rangle$", "$\\vert 1\\rangle$"])
 ax.set_ylabel("$\\vert \\psi \\rangle$ - Quantum State")
 ax.set_xlabel("$d$ - Number of $\\mathtt{X}$ gates")
 
-plt.savefig("../Thesis/figures/coherentNoise_ideal.pdf", format="pdf", bbox_inches="tight")
+plt.savefig("out/coherentNoise_ideal.png", format="png", bbox_inches="tight", dpi=300)
 
 plt.figure().clear()
 plt.close()
@@ -74,7 +74,7 @@ ax.set_yticklabels(["$\\vert 0\\rangle$", "$\\vert 1\\rangle$"])
 ax.set_ylabel("$\\vert \\psi \\rangle$ - Quantum State")
 ax.set_xlabel("$d$ - Number of $\\mathtt{X}$ gates")
 
-plt.savefig("../Thesis/figures/coherentNoise_gateError.pdf", format="pdf", bbox_inches="tight")
+plt.savefig("out/coherentNoise_gateError.png", format="png", bbox_inches="tight", dpi=300)
 
 plt.figure().clear()
 plt.close()
@@ -99,7 +99,7 @@ ax.set_xlabel("Probability $p$ for $\\mathtt{M}=1$")
 ax.legend([error, ideal], labels=["$\\epsilon=0.08 \\quad \\nu=0.2$", "$\\epsilon=0 \\quad \\nu=0$"], loc="upper left")
 
 # plt.show()
-plt.savefig("../Thesis/figures/coherentNoise_probabilityShift.pdf", format="pdf", bbox_inches="tight")
+plt.savefig("out/coherentNoise_probabilityShift.png", format="png", bbox_inches="tight", dpi=300)
 
 plt.figure().clear()
 plt.close()
@@ -125,7 +125,7 @@ ax.set_yticklabels(["$\\vert 0\\rangle$", "$\\vert 1\\rangle$"])
 ax.set_ylabel("$\\vert \\psi \\rangle$ - Quantum State")
 ax.set_xlabel("$d$ - Number of $\\mathtt{X}$ gates")
 
-plt.savefig("../Thesis/figures/coherentNoise_measurementError.pdf", format="pdf", bbox_inches="tight")
+plt.savefig("out/coherentNoise_measurementError.png", format="png", bbox_inches="tight", dpi=300)
 
 
 plt.figure().clear()
@@ -156,7 +156,7 @@ ax.set_ylabel("$\\vert \\psi \\rangle$ - Quantum State")
 ax.set_xlabel("$d$ - Number of $\\mathtt{X}$ gates")
 
 # plt.show()
-plt.savefig("../Thesis/figures/coherentNoise_measurementErrorNoise.pdf", format="pdf", bbox_inches="tight")
+plt.savefig("out/coherentNoise_measurementErrorNoise.png", format="png", bbox_inches="tight", dpi=300)
 
 plt.figure().clear()
 plt.close()
@@ -186,5 +186,28 @@ ax.set_ylabel("$\\vert \\psi \\rangle$ - Quantum State")
 ax.set_xlabel("$d$ - Number of $\\mathtt{\\tilde{G}}$ gates")
 
 # plt.show()
-plt.savefig("../Thesis/figures/coherentNoise_measurementErrorNoiseShrinking.pdf", format="pdf", bbox_inches="tight")
+plt.savefig("out/coherentNoise_measurementErrorNoiseShrinking.png", format="png", bbox_inches="tight", dpi=300)
 
+plt.figure().clear()
+plt.close()
+plt.cla()
+plt.clf()
+
+plt.plot(xGateResults_gateErrorOffsetNoise, '--o', color=MAIN)
+fig = plt.gcf()
+ax = plt.gca()
+
+idealHull_A= fctGenerator(count=GATECOUNT+1)[0::2]
+idealHull_B= fctGenerator(count=GATECOUNT+2)[1::2]
+x = np.array([2*i for i in range(0,int(GATECOUNT/2)+1)])
+ax.plot(x, idealHull_A, color=LIGHTGRAY)
+ax.plot(x, idealHull_B, color=LIGHTGRAY)
+ax.fill_between(x,idealHull_A, idealHull_B, color=LIGHTGRAY)
+
+ax.set_yticks([-1,1])
+ax.set_yticklabels(["$\\vert 0\\rangle$", "$\\vert 1\\rangle$"])
+ax.set_ylabel("$\\vert \\psi \\rangle$ - Quantum State")
+ax.set_xlabel("$d$ - Number of $\\mathtt{\\tilde{G}}$ gates")
+
+# plt.show()
+plt.savefig("out/coherentNoise_measurementErrorNoiseShrinkingIdeal.png", format="png", bbox_inches="tight", dpi=300)
