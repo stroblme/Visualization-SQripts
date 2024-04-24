@@ -4,7 +4,7 @@ import math
 from matplotlib import pyplot as plt
 from matplotlib.patches import Arc
 from matplotlib.lines import Line2D
-from colors import LIGHTGRAY, GRAY, WHITE, HIGHLIGHT, MAIN, DARKGRAY
+from colors import LIGHTGRAY, GRAY, WHITE, HIGHLIGHT, MAIN, DARKGRAY, BLACK
 from packaging.version import parse as parse_version
 
 try:
@@ -63,26 +63,29 @@ class blochSphere(Bloch):
         self.sphere_color = WHITE
         self.sphere_alpha = 0.04
         self.frame_color = GRAY
-        self.vector_color = [HIGHLIGHT]
-        self.vector_style = "wedge"
+        self.vector_color = [BLACK]
+        self.vector_style = "-|>" #"wedge"
+
+        self.angle_a_label = '$\\varphi$' #'$\\theta$'
+        self.angle_b_label = '$\\phi$'
 
         if plotBack and labelAxis:
-            self.xlabel = ['$\\vert + \\rangle$\n$\\qquad x$',"$\\vert - \\rangle$"]
+            self.xlabel = ['$\\hat{x} = \\vert + \\rangle$',"$\\vert - \\rangle$"]
             self.xlpos = [1.4,-1.4]
-            self.ylabel = ['$\\vert -\\imath \\rangle$\n$y$',"$\\vert +\\imath \\rangle$"]
+            self.ylabel = ['$\\hat{y} = \\vert - i \\rangle$',"$\\vert + i \\rangle$"]
             self.ylpos = [1.18,-1.2]
-            self.zlabel = ['$\\vert 0 \\rangle \\quad z$',"$\\vert 1 \\rangle$"]
+            self.zlabel = ['$\\hat{z} = \\vert 0 \\rangle$',"$\\vert 1 \\rangle$"]
             self.zlpos = [1.18,-1.35]
         elif labelAxis:
-            self.xlabel = ['$\\vert + \\rangle \\quad x$',""]
-            self.xlpos = [1.4,-1.4]
-            self.ylabel = ['$\\vert -\\imath \\rangle$\n$y$',""]
-            self.ylpos = [1.2,-1.2]
-            self.zlabel = ['$\\vert 0 \\rangle \\quad z$',"$\\vert 1 \\rangle$"]
+            self.xlabel = ['$\\hat{x} = \\vert + \\rangle$',""]
+            self.xlpos = [1.3,-1.3]
+            self.ylabel = ['$\\hat{y} = \\vert - i \\rangle$',""]
+            self.ylpos = [1.25,-1.2]
+            self.zlabel = ['$\\hat{z} = \\vert 0 \\rangle$',"$-\\hat{z} = \\vert 1 \\rangle$"]
         else:
             self.xlabel = ['$\\vert + \\rangle$',""]
             self.xlpos = [1.4,-1.4]
-            self.ylabel = ['$\\vert -\\imath \\rangle$ ',""]
+            self.ylabel = ['$\\vert - i \\rangle$ ',""]
             self.ylpos = [1.2,-1.2]
             self.zlabel = ['$\\vert 0 \\rangle$',""]
 
@@ -93,6 +96,11 @@ class blochSphere(Bloch):
         if savePath=='':
             savePath = self.savePath
         self.save(f"{self.savePath}{name}.pdf", format="pdf")
+
+    def saveSVG(self, name, savePath=''):
+        if savePath=='':
+            savePath = self.savePath
+        self.save(f"{self.savePath}{name}.svg", format="svg")
 
     def addVect(self, vec, label=None, drawAngles=False, angleArcPos=0.5, angleArcRadius=0.5, norm=True):
         if norm:
@@ -111,12 +119,12 @@ class blochSphere(Bloch):
             X, Y, Z, = self.generateTheta(radius, arcIndex)
             X, Y, Z, = self.rotZ(X, Y, Z, phi)
             self.add_arcs([X,Y,Z])
-            self.add_annotation(np.array([-Y[angleArcPos],X[angleArcPos],Z[angleArcPos]])*1.2, '$\\theta$')
+            self.add_annotation(np.array([-Y[angleArcPos],X[angleArcPos],Z[angleArcPos]])*1.2, self.angle_a_label)
 
             arcIndex = np.linspace(0, phi, num = self.NUM_OF_ARC_POINTS)
             X, Y, Z, = self.generatePhi(radius, arcIndex)
             self.add_arcs([X,Y,Z])
-            self.add_annotation(np.array([-Y[angleArcPos],X[angleArcPos],Z[angleArcPos]])*1.2, '$\\phi$')
+            self.add_annotation(np.array([-Y[angleArcPos],X[angleArcPos],Z[angleArcPos]])*1.2, self.angle_b_label)
 
             # Don't draw helper arc, if it would look ugly
             if theta <= np.pi/2:
@@ -239,9 +247,9 @@ class blochSphere(Bloch):
         else:
             self.plot_axes()
             self.axes.set_axis_off()
-            self.axes.set_xlim3d(-0.7, 0.7)
-            self.axes.set_ylim3d(-0.7, 0.7)
-            self.axes.set_zlim3d(-0.7, 0.7)
+            self.axes.set_xlim3d(-0.8, 0.8)
+            self.axes.set_ylim3d(-0.8, 0.8)
+            self.axes.set_zlim3d(-0.8, 0.8)
         # Manually set aspect ratio to fit a square bounding box.
         # Matplotlib did this stretching for < 3.3.0, but not above.
         if parse_version(matplotlib.__version__) >= parse_version('3.3'):
